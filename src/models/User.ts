@@ -8,6 +8,7 @@ export type UserDocument = Document & {
   gender: 'male' | 'female'
   password: string
   isAdmin: boolean
+  bookList: string[]
 }
 
 const userSchema = new mongoose.Schema({
@@ -41,6 +42,13 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
+  bookList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Book',
+    },
+  ],
 })
 
 export default mongoose.model<UserDocument>('User', userSchema)

@@ -1,20 +1,16 @@
 import mongoose, { Document } from 'mongoose'
 
 export type BookDocument = Document & {
-  bookId: number;
   title: string;
   description: string;
   status: boolean;
   ISBN: string;
   publisher: string;
   publishedDate: Date;
+  authors: string[];
 }
 
 const bookSchema = new mongoose.Schema({
-  bookId: {
-    type: Number,
-    required: true,
-  },
   title: {
     type: String,
     required: true,
@@ -25,6 +21,7 @@ const bookSchema = new mongoose.Schema({
   },
   status: {
     type: Boolean,
+    default: true,
   },
   ISBN: {
     type: String,
@@ -36,6 +33,10 @@ const bookSchema = new mongoose.Schema({
   },
   publishedDate: {
     type: Date,
+    required: false,
+  },
+  authors: {
+    type: String,
     required: true,
   },
 })

@@ -52,7 +52,6 @@ export const findUserById = async (
   try {
     const userId = req.params['userId']
     const user = await UserService.findById(userId)
-    res.json(user)
   } catch (error) {
     next(new NotFoundError('User not found', error))
   }
@@ -87,5 +86,22 @@ export const deleteUser = async (
     res.status(204).end()
   } catch (error) {
     next(new NotFoundError('Movie not found', error))
+  }
+}
+
+//borrow book
+export const borrowBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const bookId = req.body.bookId as string
+    const userId = req.params['userId']
+    const updatedUser = await UserService.addBook(bookId, userId)
+    res.json(updatedUser)
+  } catch (error) {
+    console.log('err', error)
+    next(new InternalServerError('Internal Server Error', error))
   }
 }
