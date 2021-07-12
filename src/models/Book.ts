@@ -10,35 +10,42 @@ export type BookDocument = Document & {
   authors: string[];
 }
 
-const bookSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
+const bookSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: Boolean,
+      default: true,
+    },
+    ISBN: {
+      type: String,
+      required: true,
+    },
+    publisher: {
+      type: String,
+      required: true,
+    },
+    publishedDate: {
+      type: Date,
+      required: true,
+    },
+    authors: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Author',
+      },
+    ],
   },
-  description: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: Boolean,
-    default: true,
-  },
-  ISBN: {
-    type: String,
-    required: true,
-  },
-  publisher: {
-    type: String,
-    required: true,
-  },
-  publishedDate: {
-    type: Date,
-    required: false,
-  },
-  authors: {
-    type: String,
-    required: true,
-  },
-})
+  { timestamps: true }
+)
 
 export default mongoose.model<BookDocument>('Book', bookSchema)

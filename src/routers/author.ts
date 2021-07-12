@@ -12,7 +12,7 @@ const router = express.Router()
 
 // Every path we define here will get /api/v1/movies prefix
 router.get('/', findAll)
-router.get('/:authorrId', findAuthorById)
+router.get('/:authorId', findAuthorById)
 router.put('/:authorId', updateAuthor)
 router.delete('/:authorId', deleteAuthor)
 router.post('/', createAuthor)
