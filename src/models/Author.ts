@@ -5,7 +5,6 @@ export type AuthorDocument = Document & {
   name: string
   gender: 'male' | 'female'
   location: string
-  books: string[]
 }
 
 const authorSchema = new mongoose.Schema(

@@ -101,7 +101,6 @@ export const borrowBook = async (
     const updatedUser = await UserService.addBook(bookId, userId)
     res.json(updatedUser)
   } catch (error) {
-    console.log('err', error)
     next(new InternalServerError('Internal Server Error', error))
   }
 }

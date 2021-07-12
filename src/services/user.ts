@@ -45,7 +45,6 @@ const addBook = async (bookId: string, userId: string) => {
     throw new NotFoundError('Book is not available for borrowing')
   }
 
-  //console.log("the found book", book);
   if (!foundUser) {
     throw new NotFoundError('User not found')
   }
