@@ -6,7 +6,6 @@ function create(author: AuthorDocument): Promise<AuthorDocument> {
 
 function findById(authorId: string): Promise<AuthorDocument> {
   return Author.findById(authorId)
-    .populate('books')
     .exec() //returns true promise
     .then((author) => {
       if (!author) {
@@ -18,7 +17,8 @@ function findById(authorId: string): Promise<AuthorDocument> {
 
 function findAll(): Promise<AuthorDocument[]> {
   return Author.find()
-  .exec() // Return a Promise
+    .populate({ path: 'booksWritten', select: 'title description publisher' })
+    .exec() // Return a Promise
 }
 
 function update(

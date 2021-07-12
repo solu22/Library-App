@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-delimiter-style */
 import mongoose, { Document } from 'mongoose'
+import uniqueValidator from 'mongoose-unique-validator'
 
 export type UserDocument = Document & {
   firstName: string
@@ -9,11 +10,16 @@ export type UserDocument = Document & {
   password: string
   isAdmin: boolean
   borrowedBookList: string[]
-  movies: string[]
 }
 
 const userSchema = new mongoose.Schema(
   {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     firstName: {
       type: String,
       index: true,
@@ -28,6 +34,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       index: true,
+      unique: true,
     },
 
     gender: {
@@ -55,4 +62,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-export default mongoose.model<UserDocument>('User', userSchema)
+export default mongoose.model<UserDocument>(
+  'User',
+  userSchema.plugin(uniqueValidator)
+)

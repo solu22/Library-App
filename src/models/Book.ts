@@ -14,12 +14,14 @@ const bookSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, 'Field cannot be empty'],
       index: true,
+      lowercase: true,
+      trim: true,
     },
     description: {
       type: String,
-      required: true,
+      required: [true, 'Please enter some description'],
     },
     status: {
       type: Boolean,

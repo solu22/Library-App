@@ -6,7 +6,6 @@ import {
   InternalServerError,
   NotFoundError,
 } from '../helpers/apiError'
-import Author, { AuthorDocument } from '../models/Author'
 
 //Create new book,POST
 export const createBook = async (
@@ -15,13 +14,11 @@ export const createBook = async (
   next: NextFunction
 ) => {
   try {
-    const book = new Book(req.body)
+    const book = new Book({
+      ...req.body,
+    })
+
     const createdBook = await BookService.create(book)
-
-    const foundAuthor = await Author.findById({ _id: book.authors })
-    foundAuthor?.books.push(createdBook._id)
-    await foundAuthor?.save()
-
     res.json(createdBook)
   } catch (error) {
     if (error.name === 'ValidationError') {

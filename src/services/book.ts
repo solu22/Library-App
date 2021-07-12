@@ -6,7 +6,6 @@ function create(book: BookDocument): Promise<BookDocument> {
 
 function findById(bookId: string): Promise<BookDocument> {
   return Book.findById(bookId)
-    .populate('authors')
     .exec() // .exec() will return a true Promise
     .then((book) => {
       if (!book) {
@@ -17,7 +16,7 @@ function findById(bookId: string): Promise<BookDocument> {
 }
 
 function findAll(): Promise<BookDocument[]> {
-  return Book.find().sort({ title: 1 }).exec() // Return a Promise
+  return Book.find().exec() // Return a Promise
 }
 
 function update(
