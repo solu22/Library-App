@@ -1,36 +1,51 @@
+/* eslint-disable */
 import { NotFoundError } from '../helpers/apiError'
 import User, { UserDocument } from '../models/User'
-import Book, { BookDocument } from '../models/Book'
+import Book from '../models/Book'
 
-function create(user: UserDocument): Promise<UserDocument> {
-  return user.save()
+const create = async (user: UserDocument) => {
+  const createUser = await user.save()
+  return createUser
 }
 
-function findById(userId: string): Promise<UserDocument> {
-  return User.findById(userId)
-    .populate('borrowedBookList')
-    .exec() //returns true promise
-    .then((user) => {
-      if (!user) {
-        throw new Error(`User ${userId} not found`)
-      }
-      return user
-    })
+const findAll = async () => {
+  const findAllUser = await User.find().populate({
+    path: 'borrowedBookList',
+    populate: { path: 'authors' },
+  })
+  return findAllUser
 }
 
-function findAll(): Promise<UserDocument[]> {
-  return User.find().exec() // Return a Promise
+const findById = async (userId: string) => {
+  const user = await User.findById(userId).populate({
+    path: 'borrowedBookList',
+    populate: { path: 'authors' },
+  })
+  if (!user) {
+    throw new Error(`User ${userId} not found`)
+  }
+  return user
 }
 
-function update(
-  userId: string,
-  update: Partial<UserDocument>
-): Promise<UserDocument | null> {
-  return User.findByIdAndUpdate(userId, update, { new: true }).exec()
+const findByEmail = async (email: string) => {
+  const user = await User.findOne({ email })
+  return user
+  // if(!user){
+  //   throw new NotFoundError(`User ${email} not found `)
+  // }
+  // return user
 }
 
-function deleteUser(userId: string): Promise<UserDocument | null> {
-  return User.findByIdAndDelete(userId).exec()
+const update = async (userId: string, update: Partial<UserDocument>) => {
+  const userUpdate = await User.findByIdAndUpdate(userId, update, {
+    new: true,
+  }).exec()
+  return userUpdate
+}
+
+const deleteUser = async (userId: string) => {
+  const deletedUser = await User.findByIdAndDelete(userId)
+  return deletedUser
 }
 
 //add book borrowed
@@ -55,11 +70,30 @@ const addBook = async (bookId: string, userId: string) => {
   return foundUser.save()
 }
 
+//check if user exits with given email else create new user with google Auth
+const findOrCreate = async (parsedToken: any) => {
+  const { email, given_name, family_name } = parsedToken.payload
+  const user = await User.findOne({ email: email })
+  if (user) {
+    return user
+  }
+
+  const createNewUser = new User({
+    firstName: given_name,
+    lastName: family_name,
+    email: email,
+  })
+  await createNewUser.save()
+  return createNewUser
+}
+
 export default {
   create,
-  findById,
   findAll,
+  findById,
+  findByEmail,
   update,
   deleteUser,
   addBook,
+  findOrCreate,
 }

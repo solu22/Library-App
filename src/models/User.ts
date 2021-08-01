@@ -1,25 +1,24 @@
-/* eslint-disable @typescript-eslint/member-delimiter-style */
+//disable eslint next line
+
 import mongoose, { Document } from 'mongoose'
-import uniqueValidator from 'mongoose-unique-validator'
+//import uniqueValidator from 'mongoose-unique-validator'
+import bcrypt from 'bcrypt'
 
 export type UserDocument = Document & {
-  firstName: string
-  lastName: string
-  email: string
-  gender: 'male' | 'female'
-  password: string
-  isAdmin: boolean
-  borrowedBookList: string[]
+  firstName: string;
+  lastName: string;
+  email: string;
+  gender: 'male' | 'female';
+  password: string;
+  cpassword: string;
+  isAdmin: boolean;
+  token: string;
+  borrowedBookList: string[];
+  matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-
     firstName: {
       type: String,
       index: true,
@@ -34,19 +33,30 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       index: true,
-      unique: true,
+      //unique: true,
     },
 
     gender: {
       type: String,
       enum: ['male', 'female'],
-      required: true,
+      required: false,
     },
 
     password: {
       type: String,
-      required: true,
+      required: false,
     },
+
+    cpassword: {
+      type: String,
+      required: false,
+    },
+
+    token: {
+      type: String,
+      required: false,
+    },
+
     isAdmin: {
       type: Boolean,
       default: false,
@@ -62,7 +72,23 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-export default mongoose.model<UserDocument>(
-  'User',
-  userSchema.plugin(uniqueValidator)
-)
+//hashing pasword
+
+userSchema.pre('save', async function (next) {
+  const user = this as UserDocument
+  if (!user.isModified('password')) {
+    next()
+  }
+
+  const salt = await bcrypt.genSalt(12)
+  user.password = await bcrypt.hash(user.password, salt)
+})
+
+userSchema.methods.matchPassword = async function (
+  enteredPassword: string
+): Promise<boolean> {
+  const user = this as UserDocument
+  return await bcrypt.compare(enteredPassword, user.password)
+}
+
+export default mongoose.model<UserDocument>('User', userSchema)

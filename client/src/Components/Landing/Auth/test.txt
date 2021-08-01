@@ -1,0 +1,24 @@
+const responseGoogleSuccess = async (response: any) => {
+   
+    if (response.tokenId) {
+      console.log('response from google', response)
+      const { data } = await axios.post('http://localhost:3000/api/v1/users/login', {
+        id_token: response.tokenId,
+      })
+      localStorage.setItem('token', data.token)
+
+      
+    }
+  }
+
+   dispatch({type: USER_LOGIN_REQUEST})
+        console.log('Dispatching actjion here', tokenId);
+
+        const {data}= await axios.post("http://localhost:3000/api/v1/users/login", (tokenId))
+
+        console.log("data from auth actions>>>>>>>", data)
+        // Save token to local storage
+        localStorage.setItem('token', JSON.stringify(data))
+        dispatch({
+        type: USER_LOGIN,
+        payload: data

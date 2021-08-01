@@ -6,8 +6,7 @@ export type BookDocument = Document & {
   status: boolean;
   ISBN: string;
   publisher: string;
-  publishedDate: Date;
-  authors: string[];
+  //authors: string[];
 }
 
 const bookSchema = new mongoose.Schema(
@@ -35,14 +34,10 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    publishedDate: {
-      type: Date,
-      required: true,
-    },
+
     authors: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Author',
       },
     ],

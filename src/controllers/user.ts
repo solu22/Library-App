@@ -1,33 +1,82 @@
 import { Request, Response, NextFunction } from 'express'
 import UserService from '../services/user'
 import User from '../models/User'
+import generateToken from '../util/generateToken'
 import {
   BadRequestError,
   InternalServerError,
   NotFoundError,
 } from '../helpers/apiError'
 
-//Create User/Post Method
+//Create User/Post Method//Register
 export const createUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const { firstName, lastName, email, password, cpassword } = req.body
+
+    const checkUser = await User.findOne({ email: email })
+
+    if (checkUser) {
+      return res.status(422).json({ error: 'Email already Exist' })
+    }
+
     const user = new User({
-      ...req.body,
+      firstName,
+      lastName,
+      email,
+      password,
+      cpassword,
     })
 
     const createdUser = await UserService.create(user)
-    res.json(createdUser)
+
+    if (createdUser) {
+      res.status(201).json({
+        message: req.body,
+        //token: generateToken(createdUser._id),
+        successMesage: 'successfully registered',
+      })
+    }
   } catch (error) {
     if (error.name === 'ValidationError') {
       next(new BadRequestError('Invalid Request', error))
     } else {
-      next(new InternalServerError('Internal Server Error', error))
+      next(new InternalServerError('Internal Server Error,', error))
     }
   }
 }
+
+//login user
+
+// export const loginUser= async(req: Request, res:Response)=>{
+//   try{
+//     const {email, password}= req.body
+
+//     if(! email || !password){
+//       return res.status(400).json({error: "please filled the data"})
+//     }
+//     const checkUser= await User.findOne({email})
+
+//     //console.log("checkMohko", checkUser)
+//     if(checkUser && ( await checkUser.matchPassword(password))){
+//       res.status(201).json({
+
+//       message: "Successfully Logged In",
+//       userdata: req.body,
+//       token: generateToken(checkUser._id)
+//     })
+//   }
+//     else{
+//       return res.status(400).json({error: "Invalid Email or Password"})
+//     }
+
+//   } catch(error){
+//     console.log(error)
+//   }
+// }
 
 //Get all users
 export const findAll = async (
@@ -52,6 +101,7 @@ export const findUserById = async (
   try {
     const userId = req.params['userId']
     const user = await UserService.findById(userId)
+    res.json(user)
   } catch (error) {
     next(new NotFoundError('User not found', error))
   }
@@ -103,4 +153,9 @@ export const borrowBook = async (
   } catch (error) {
     next(new InternalServerError('Internal Server Error', error))
   }
+}
+// google authorization
+export const googleAuth = async (req: Request, res: Response) => {
+  console.log('authorization from google>>>>>>>>>>>>>>>>>>>>', req)
+  res.json(req.user)
 }

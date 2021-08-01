@@ -1,4 +1,5 @@
 import express from 'express'
+import passport from 'passport'
 
 import {
   createBook,
@@ -13,8 +14,12 @@ const router = express.Router()
 // Every path we define here will get /api/v1/movies prefix
 router.get('/', findAll)
 router.get('/:bookId', findById)
-router.put('/:bookId', updateBook)
+router.put(
+  '/:bookId',
+  passport.authenticate('jwt', { session: false }),
+  updateBook
+)
 router.delete('/:bookId', deleteBook)
-router.post('/', createBook)
+router.post('/', passport.authenticate('jwt', { session: false }), createBook)
 
 export default router

@@ -24,11 +24,17 @@
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/compression": "^1.7.0",
+    "@types/cors": "^2.8.12",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/lusca": "^1.7.0",
+    "@types/passport-jwt": "^3.0.6",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
     "build-sass": "^1.0.1",
     "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
@@ -42,6 +48,8 @@
     "mongoose-unique-validator": "^2.0.3",
     "nodemailer": "^6.4.3",
     "passport": "^0.4.1",
+    "passport-google-id-token": "^0.4.7",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "winston": "^3.2.1",
     "yarn": "^1.22.10"
@@ -57,7 +65,7 @@
     "@types/node": "^12.12.28",
     "@types/node-sass": "^4.11.0",
     "@types/nodemailer": "^6.4.0",
-    "@types/passport": "^1.0.2",
+    "@types/passport": "^1.0.7",
     "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.8",
     "@types/winston": "^2.4.4",
@@ -66,11 +74,10 @@
     "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
     "jest": "^26.6.3",
-    "nodemon": "^1.19.4",
+    "nodemon": "^2.0.12",
     "supertest": "^4.0.2",
     "ts-jest": "^26.5.1",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.8.2"
+    "ts-node": "^8.6.2"
   },
   "husky": {
     "hooks": {

@@ -1,3 +1,24 @@
-GET http://localhost:3000/api/v1/authors
 
+POST http://localhost:3000/api/v1/users/register
+content-type: application/json
 
+{
+    
+  "firstName": "hary",
+  "lastName": "harryu",
+  "email": "test2@yahoo.fi",
+  "gender": "male",
+  "password": "test2",
+  "cpassword": "test2"
+}
+
+###
+
+POST http://localhost:3000/api/v1/users/login
+content-type: application/json
+
+{
+  "email": "mohkoo@yahoo.fi",
+  "password": "mohrko"
+  }
+  

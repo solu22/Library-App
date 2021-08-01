@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import BookService from '../services/book'
 import Book from '../models/Book'
+import mongoose from 'mongoose'
 import {
   BadRequestError,
   InternalServerError,
@@ -64,6 +65,8 @@ export const updateBook = async (
   try {
     const update = req.body
     const bookId = req.params.bookId
+    if (!mongoose.Types.ObjectId.isValid(bookId))
+      return res.status(404).send('No book with such id')
     const updatedBook = await BookService.update(bookId, update)
     res.json(updatedBook)
   } catch (error) {
@@ -78,9 +81,12 @@ export const deleteBook = async (
   res: Response,
   next: NextFunction
 ) => {
+  //console.log('The file is here...')
   try {
-    await BookService.deleteBook(req.params.bookId)
-    res.status(204).end()
+    // console.log('The paras mare ', req.params)
+    const updateBook = await BookService.deleteBook(req.params.bookId)
+    //res.send({"bookId": req.params.bookId})
+    res.json(updateBook)
   } catch (error) {
     next(new NotFoundError('Book not found', error))
   }
