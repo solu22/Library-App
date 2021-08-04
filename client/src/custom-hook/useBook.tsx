@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Books from '../Components/Books/Books'
+import Books from '../Pages/Books/Books'
 import { fetchBookThunk } from '../Redux/Actions/book'
 import { AppState } from '../Redux/Reducers'
 

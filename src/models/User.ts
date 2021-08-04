@@ -14,25 +14,22 @@ export type UserDocument = Document & {
   isAdmin: boolean;
   token: string;
   borrowedBookList: string[];
-  matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
 const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      index: true,
       required: true,
+      index: true,
     },
     lastName: {
       type: String,
-      index: true,
       required: true,
     },
     email: {
       type: String,
       required: true,
-      index: true,
       //unique: true,
     },
 
@@ -71,24 +68,5 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
-
-//hashing pasword
-
-userSchema.pre('save', async function (next) {
-  const user = this as UserDocument
-  if (!user.isModified('password')) {
-    next()
-  }
-
-  const salt = await bcrypt.genSalt(12)
-  user.password = await bcrypt.hash(user.password, salt)
-})
-
-userSchema.methods.matchPassword = async function (
-  enteredPassword: string
-): Promise<boolean> {
-  const user = this as UserDocument
-  return await bcrypt.compare(enteredPassword, user.password)
-}
 
 export default mongoose.model<UserDocument>('User', userSchema)

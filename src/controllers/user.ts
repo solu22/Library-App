@@ -1,7 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import UserService from '../services/user'
 import User from '../models/User'
-import generateToken from '../util/generateToken'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import { JWT_SECRET } from '../util/secrets'
+
 import {
   BadRequestError,
   InternalServerError,
@@ -15,29 +18,43 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    const { firstName, lastName, email, password, cpassword } = req.body
-
-    const checkUser = await User.findOne({ email: email })
+    const { firstName, lastName, email, password, cpassword, isAdmin } =
+      req.body
+    const checkUser = await User.findOne({ email })
 
     if (checkUser) {
-      return res.status(422).json({ error: 'Email already Exist' })
-    }
+      res.status(400)
+      throw new Error('User Already Exists')
+    } else {
+      bcrypt.hash(password, 10, async function (err, hash) {
+        const user = new User({
+          firstName,
+          lastName,
+          email,
+          password: hash,
+          cpassword,
+          isAdmin,
+        })
 
-    const user = new User({
-      firstName,
-      lastName,
-      email,
-      password,
-      cpassword,
-    })
+        const createdUser = await UserService.create(user)
+        const token = jwt.sign({ email: createdUser.email }, JWT_SECRET, {
+          expiresIn: '1h',
+        })
 
-    const createdUser = await UserService.create(user)
-
-    if (createdUser) {
-      res.status(201).json({
-        message: req.body,
-        //token: generateToken(createdUser._id),
-        successMesage: 'successfully registered',
+        if (createdUser) {
+          res.status(201).json({
+            token: token,
+            email: email,
+            _id: createdUser._id,
+            firstName: createdUser.firstName,
+            lastName: createdUser.lastName,
+            isAdmin: createdUser.isAdmin,
+            successMesage: 'successfully registered',
+          })
+        } else {
+          res.status(400)
+          throw new Error('Error Occured')
+        }
       })
     }
   } catch (error) {
@@ -49,34 +66,57 @@ export const createUser = async (
   }
 }
 
-//login user
+//local login
 
-// export const loginUser= async(req: Request, res:Response)=>{
-//   try{
-//     const {email, password}= req.body
+export const localLogin = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body
 
-//     if(! email || !password){
-//       return res.status(400).json({error: "please filled the data"})
-//     }
-//     const checkUser= await User.findOne({email})
+    if (!email || !password) {
+      return res.status(400).json({ error: 'please filled the data' })
+    }
+    const checkUser = await User.findOne({ email })
 
-//     //console.log("checkMohko", checkUser)
-//     if(checkUser && ( await checkUser.matchPassword(password))){
-//       res.status(201).json({
+    if (checkUser) {
+      bcrypt.compare(password, checkUser.password, (err, result) => {
+        if (err) {
+          return res.status(401).json({
+            message: 'Auth failed',
+          })
+        }
+        if (result) {
+          const token = jwt.sign(
+            {
+              email: checkUser.email,
+            },
+            JWT_SECRET,
 
-//       message: "Successfully Logged In",
-//       userdata: req.body,
-//       token: generateToken(checkUser._id)
-//     })
-//   }
-//     else{
-//       return res.status(400).json({error: "Invalid Email or Password"})
-//     }
+            {
+              expiresIn: '1h',
+            }
+          )
+          return res.status(200).json({
+            message: 'Auth successful',
+            token: token,
+            email: email,
+            _id: checkUser._id,
+            firstName: checkUser.firstName,
+            lastName: checkUser.lastName,
+            isAdmin: checkUser.isAdmin,
+          })
+        }
 
-//   } catch(error){
-//     console.log(error)
-//   }
-// }
+        res.status(401).json({
+          message: 'Auth failed',
+        })
+      })
+    } else {
+      return res.status(400).json({ error: 'Invalid Email or Password' })
+    }
+  } catch (err) {
+    res.status(500).json({ message: err })
+  }
+}
 
 //Get all users
 export const findAll = async (

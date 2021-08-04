@@ -1,5 +1,5 @@
 
-import {  USER_LOGIN,USER_LOGOUT,  User, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, AuthActions } from '../../types'
+import {  USER_LOGIN,USER_LOGOUT,  User, USER_LOGIN_FAIL, USER_LOGIN_REQUEST, AuthActions, LOCAL_LOGIN } from '../../types'
 
 type InitState = {
   activeUser: User| null,
@@ -23,6 +23,9 @@ const authReducer = (state= initState , action: AuthActions): InitState => {
     return {...state, loading:true}  
 
       case USER_LOGIN:
+      return {activeUser: action.payload, loading: true, error:""}
+
+      case LOCAL_LOGIN:
       return {activeUser: action.payload, loading: true, error:""}
 
       case USER_LOGIN_FAIL:

@@ -4,21 +4,41 @@ content-type: application/json
 
 {
     
-  "firstName": "hary",
-  "lastName": "harryu",
-  "email": "test2@yahoo.fi",
+  "firstName": "Turku",
+  "lastName": "Helsinki",
+  "email": "rajesh@gmail.com",
   "gender": "male",
-  "password": "test2",
-  "cpassword": "test2"
+  "password": "turku",
+  "cpassword": "turku",
+  "isAdmin": true
 }
 
 ###
 
-POST http://localhost:3000/api/v1/users/login
+POST http://localhost:3000/api/v1/users/localLogin
 content-type: application/json
 
 {
-  "email": "mohkoo@yahoo.fi",
-  "password": "mohrko"
+  "email": "madan@gmail.com",
+  "password": "test3"
   }
   
+
+###
+
+GET http://localhost:3000/api/v1/books
+
+
+###
+POST http://localhost:3000/api/v1/books
+content-type: application/json
+
+{
+   "title": "mohko",
+    "description": "mohko",
+    "ISBN": "mohko",
+    "publisher": "mohko"
+}
+
+
+

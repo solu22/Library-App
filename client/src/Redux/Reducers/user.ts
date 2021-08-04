@@ -1,5 +1,5 @@
 
-import { USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS,USER_REGISTER_FAIL, UserActions, User  } from '../../types'
+import { USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS,USER_REGISTER_FAIL, UserActions, User, LOCAL_LOGIN, USER_LOGIN  } from '../../types'
 
 type InitState = {
   users: User[] | User,
@@ -18,6 +18,9 @@ export const initState: InitState = {
 
 const userReducer = (state= initState , action: UserActions): InitState => {
   switch (action.type) {
+
+    
+
     case USER_REGISTER_REQUEST:
     return {...state, loading:true}  
 
