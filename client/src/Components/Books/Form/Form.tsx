@@ -1,17 +1,20 @@
 /*React and Redux*/
 import React, { useState } from 'react'
-import { useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { AppState } from '../../../Redux/Reducers'
 import { addBookThunk } from '../../../Redux/Actions/book'
+
+import { Formik, Form, Field, ErrorMessage } from 'formik'
 
 /*Types */
 import { NewBookFormValues } from '../../../types'
 
 /*Mui Imports */
 import { TextField, Button, Typography, Paper } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles'
+import { validateBookSchema } from '../../../FormValidation/ValidateSchema'
 
-const useStyles= makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     '& .MuiTextField-root': {
       margin: theme.spacing(),
@@ -25,89 +28,100 @@ const useStyles= makeStyles((theme) => ({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
- 
+
   buttonSubmit: {
     marginBottom: 10,
   },
-}));
+  textField: {
+    '& p': {
+      color: 'red',
+    },
+  },
+}))
 
 /*Form data initial State*/
-const initialState= {
+const initialState = {
   title: '',
   description: '',
   ISBN: '',
   publisher: '',
-
 }
 
-
-const Form = (): JSX.Element => {
-  
-  const [bookFormData, setBookFormData]= useState(initialState)
+const AddBookForm = () => {
   const classes = useStyles()
   const dispatch = useDispatch()
 
-  const handleChange= (e: any)=>{
-    const name = e.target.name
-    const value= e.target.value
-    setBookFormData({...bookFormData, [name]: value})
-  }  
-
-  const addNewBook = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    dispatch(addBookThunk(bookFormData))
-    setBookFormData(initialState)
-   
+  const handleSubmit = (values: typeof initialState, props: any) => {
+    dispatch(addBookThunk(values))
+    setTimeout(() => {
+      props.resetForm()
+      props.setSubmitting(false)
+    }, 2000)
   }
 
   return (
     <Paper className={classes.paper}>
-      <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={addNewBook}>
-        <Typography variant="h6">Add a new Book Here</Typography>
+      <Formik initialValues={initialState} onSubmit={handleSubmit} validationSchema={validateBookSchema}>
+        {props => (
+          <Form className={`${classes.root} ${classes.form}`}>
+            <Typography variant="h6">Add a new Book Here</Typography>
 
-        <TextField
-          name="title"
-          variant="outlined"
-          label="Title"
-          fullWidth
-          value={bookFormData.title}
-          onChange={handleChange}
-        />
+            <Field
+              as={TextField}
+              name="title"
+              variant="outlined"
+              label="Title"
+              fullWidth
+              helperText={<ErrorMessage name="title" />}
+              className={classes.textField}
+            />
 
-        <TextField
-          name="description"
-          variant="outlined"
-          label="Description"
-          fullWidth
-          value={bookFormData.description}
-          onChange={handleChange}
-        />
+            <Field
+              as={TextField}
+              name="description"
+              variant="outlined"
+              label="Description"
+              fullWidth
+              helperText={<ErrorMessage name="description" />}
+              className={classes.textField}
+            />
 
-        <TextField
-          name="ISBN"
-          variant="outlined"
-          label="ISBN"
-          fullWidth
-          value={bookFormData.ISBN}       
-          onChange={handleChange}
-        />
+            <Field
+              as={TextField}
+              name="ISBN"
+              variant="outlined"
+              label="ISBN"
+              fullWidth
+              helperText={<ErrorMessage name="ISBN" />}
+              className={classes.textField}
+            />
 
-        <TextField
-          name="publisher"
-          variant="outlined"
-          label="Publisher"
-          fullWidth
-          value={bookFormData.publisher}
-          onChange={handleChange}
-        />
+            <Field
+              as={TextField}
+              name="publisher"
+              variant="outlined"
+              label="Publisher"
+              fullWidth
+              helperText={<ErrorMessage name="publisher" />}
+              className={classes.textField}
+            />
 
-        <Button className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth>
-          Add Book
-        </Button>
-      </form>
+            <Button
+              className={classes.buttonSubmit}
+              variant="contained"
+              color="primary"
+              size="large"
+              type="submit"
+              fullWidth
+              disabled={props.isSubmitting}
+            >
+              {props.isSubmitting ? 'Adding Book' : 'Add Book'}
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Paper>
   )
 }
 
-export default Form
+export default AddBookForm

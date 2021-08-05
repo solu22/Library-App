@@ -23,6 +23,7 @@ import { register } from '../../../Redux/Actions/user'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../Redux/Reducers'
 import LinearWithValueLabel from '../Loader'
+import { validateRegisterSchema } from '../../../FormValidation/ValidateSchema'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,23 +75,7 @@ const Register = () => {
   const userData = useSelector((state: AppState) => state.userReducer)
   const { loading } = userData
 
-  //Yup validation
-  const validateSchema = Yup.object().shape({
-    firstName: Yup.string().required('Field cannot be empty'),
-    lastName: Yup.string().required('Field cannot be empty'),
-    email: Yup.string()
-      .email('Please enter valid email address')
-      .required('Email is required'),
-    gender: Yup.string()
-      .oneOf(['male', 'female'], 'Required')
-      .required('Required'),
-    password: Yup.string()
-      .min(7, 'Password minimum length should be 7')
-      .required('Please enter your password with given criteria'),
-    cpassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'password do not match')
-      .required('Please confirm your password'),
-  })
+ 
 
   //handle submit for form
   const handleSubmit = (values: typeof initialState, props: any) => {
@@ -107,7 +92,7 @@ const Register = () => {
         <Typography className={classes.loginHead}>Sign Up</Typography>
         {loading && <LinearWithValueLabel />}
 
-        <Formik initialValues={initialState} onSubmit={handleSubmit} validationSchema={validateSchema}>
+        <Formik initialValues={initialState} onSubmit={handleSubmit} validationSchema={validateRegisterSchema}>
           {props => (
             <Form className={`${classes.root} ${classes.form}`}>
               <Field

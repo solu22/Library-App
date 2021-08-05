@@ -40,17 +40,16 @@ export const logout= ()=> async(dispatch: Dispatch<AuthActions>)=>{
 
     try{
 
-     const response= await axios.post("http://localhost:3000/api/v1/users/localLogin", values)
-     console.log("res", response)
-     //localStorage.setItem('token', data.token)
+     const {data}= await axios.post("http://localhost:3000/api/v1/users/localLogin", values)
+     localStorage.setItem('token', data.token)
     
      dispatch({
          type: LOCAL_LOGIN,
-         payload: response.data
+         payload: data
         })  
         
     }catch(error){
-        console.log("auth actions error", error.response.data)
-        dispatch(loginFailed(error.response))
+        console.log(error)
+       
     }
  }

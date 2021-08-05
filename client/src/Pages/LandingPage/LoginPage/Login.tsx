@@ -1,7 +1,7 @@
 /*React and redux */
 import React, { useState } from 'react'
 import {Formik, Form, Field, ErrorMessage} from 'formik'
-import * as Yup from 'yup'
+import { validateLoginSchema } from '../../../FormValidation/ValidateSchema'
 
 /*Mui Imports */
 import { TextField, Button, Typography, Paper, makeStyles } from '@material-ui/core'
@@ -64,13 +64,8 @@ const Login = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   
-  //yup validation
-  const validateSchema = Yup.object().shape({
-    email:Yup.string().email('Please enter valid email address').required('Email is required'),
-    password: Yup.string().required('Please enter your password with given criteria')
-})
 
-  const handleSubmit= (values: typeof initialState , props: any)=>{
+ const handleSubmit= (values: typeof initialState , props: any)=>{
     dispatch(localLogin(values))
     history.push("/homepage")
     setTimeout(() => {
@@ -84,7 +79,7 @@ const Login = () => {
       <Paper className={classes.paper}>
         {loading && <LinearWithValueLabel />}
         
-          <Formik initialValues= {initialState} onSubmit= {handleSubmit} validationSchema= {validateSchema}>
+          <Formik initialValues= {initialState} onSubmit= {handleSubmit} validationSchema= {validateLoginSchema}>
             {(props)=>(
               
               <Form className={`${classes.root} ${classes.form}`}>

@@ -22,10 +22,10 @@ export const fetchBookThunk = ()=> async (dispatch: Dispatch<BookActions>)=>{
     }
 
 
-    export const addBookThunk = (book: NewBookFormValues)=> async (dispatch: Dispatch<BookActions>)=>{
+    export const addBookThunk = (values: { title: string; description: string; ISBN: string; publisher: string })=> async (dispatch: Dispatch<BookActions>)=>{
         
         try {
-            const {data} = await axiosInterceptor.post(baseURL, book)
+            const {data} = await axiosInterceptor.post(baseURL, values)
             if(!data){
                alert("you are not authenticated")
             }
@@ -35,7 +35,7 @@ export const fetchBookThunk = ()=> async (dispatch: Dispatch<BookActions>)=>{
                 payload: data,
             })
         } catch (e) {
-           return e
+           console.log(e)
         }
 
     }
@@ -49,7 +49,7 @@ export const fetchBookThunk = ()=> async (dispatch: Dispatch<BookActions>)=>{
                 payload: data,
             })
         } catch (e) {
-           return e
+           console.log(e)
         }
 
     }
@@ -63,7 +63,7 @@ export const fetchBookThunk = ()=> async (dispatch: Dispatch<BookActions>)=>{
               payload: data,
           })
       } catch (e) {
-         return e
+         console.log(e)
       }
   }
 

@@ -1,7 +1,7 @@
 import {Container, Grid, Grow } from '@material-ui/core'
 import React, { useState } from 'react'
 import Books from '../Books/Books'
-import Form from '../../Components/Books/Form/Form'
+import AddBookForm from '../../Components/Books/Form/Form'
 import useBook from '../../custom-hook/useBook'
 import LinearWithValueLabel from '../LandingPage/Loader'
 import Appbar from '../../Components/AppBar/Appbar'
@@ -28,7 +28,7 @@ const Homepage = (): JSX.Element => {
                <Books book = {filteredBook} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Form />
+              <AddBookForm />
             </Grid>
           </Grid>
         </Container>

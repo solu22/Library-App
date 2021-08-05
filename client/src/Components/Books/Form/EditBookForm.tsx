@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export type EditBookFormProps = {
-  book: any
+  book: Book
 }
 
 const EditBookForm = ({ book }: EditBookFormProps) => {
