@@ -7,7 +7,7 @@ type ErrorMessageProps={
     severity:any,
 }
 
-const ErrorMessage = ({variant, children, severity}: ErrorMessageProps)=>{
+const Message = ({variant, children, severity}: ErrorMessageProps)=>{
     return(
         <Alert variant="filled" severity="error">
           <strong>{children} </strong> 
@@ -15,4 +15,4 @@ const ErrorMessage = ({variant, children, severity}: ErrorMessageProps)=>{
     )
 }
 
-export default ErrorMessage
+export default Message

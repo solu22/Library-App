@@ -12,8 +12,6 @@ export const initState: InitState = {
   activeUser: null,
   error: "",
   loading: false,
-  
-  
 }
 
 

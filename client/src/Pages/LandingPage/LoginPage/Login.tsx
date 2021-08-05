@@ -1,19 +1,21 @@
 /*React and redux */
 import React, { useState } from 'react'
+import {Formik, Form, Field, ErrorMessage} from 'formik'
+import * as Yup from 'yup'
 
 /*Mui Imports */
 import { TextField, Button, Typography, Paper, makeStyles } from '@material-ui/core'
-import Alert from '@material-ui/lab/Alert'
 import LinearWithValueLabel from '../Loader'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../Redux/Reducers'
 import { localLogin } from '../../../Redux/Actions/auth'
 import { useHistory } from 'react-router-dom'
-import ErrorMessage from '../ErrorMessage'
+import { red } from '@material-ui/core/colors'
+//import ErrorMessage from '../ErrorMessage'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    '& .MuiTextField-root': {
+    '& .MuiTextField-root':{
       margin: theme.spacing(),
     },
   },
@@ -35,7 +37,17 @@ const useStyles = makeStyles(theme => ({
   loginHead: {
     textAlign: 'center',
   },
+
+  textField:{
+   '& p':{
+     color: 'red', 
+    },
+  },
+  
+
 }))
+
+
 
 /*Initial state of form data */
 const initialState = {
@@ -44,62 +56,67 @@ const initialState = {
 }
 
 const Login = () => {
-  const [formData, setFormData] = useState(initialState)
   const [message, setMessage] = useState('')
   const classes = useStyles()
   const authData = useSelector((state: AppState) => state.authReducer)
   const { loading, error } = authData
+
   const dispatch = useDispatch()
   const history = useHistory()
+  
+  //yup validation
+  const validateSchema = Yup.object().shape({
+    email:Yup.string().email('Please enter valid email address').required('Email is required'),
+    password: Yup.string().required('Please enter your password with given criteria')
+})
 
-  //handle submit for form
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    // if(error){
-    //   <p>{error}</p>
-    // }
-    e.currentTarget.textContent = 'Signing You In'
-    dispatch(localLogin(formData))
-    history.push('/homepage')
+  const handleSubmit= (values: typeof initialState , props: any)=>{
+    dispatch(localLogin(values))
+    history.push("/homepage")
+    setTimeout(() => {
+      props.resetForm()
+      props.setSubmitting(false)
+    }, 2000)
   }
 
   return (
     <>
       <Paper className={classes.paper}>
         {loading && <LinearWithValueLabel />}
-        {message && (
-          <ErrorMessage variant="filled" severity="error">
-            {message}
-          </ErrorMessage>
-        )}
-
-        <form noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
-          <TextField
+        
+          <Formik initialValues= {initialState} onSubmit= {handleSubmit} validationSchema= {validateSchema}>
+            {(props)=>(
+              
+              <Form className={`${classes.root} ${classes.form}`}>
+              
+            <Field as = {TextField}
             autoComplete="email"
             name="email"
             variant="outlined"
             label="Email"
-            required
             fullWidth
-            onChange={e => setFormData({ ...formData, email: e.target.value })}
+            helperText= {<ErrorMessage name= "email"/>}
+            className = {classes.textField}
           />
 
-          <TextField
+          <Field as = {TextField}
             autoComplete="password"
             name="password"
             variant="outlined"
             label="Password"
-            required
+            type= "password"
             fullWidth
-            onChange={e => setFormData({ ...formData, password: e.target.value })}
+            helperText= {<ErrorMessage name= "password"/>}
+            className = {classes.textField}
           />
 
-          <Button variant="contained" type="submit" 
-           onClick={handleSubmit}  color="primary">
-            Sign In
+          <Button variant="contained" type="submit" disabled = {props.isSubmitting}
+            color="primary">{props.isSubmitting?"Signing In" : "Sign In"}
           </Button>
-        </form>
+              </Form>
+            )}
+          </Formik>
+          
       </Paper>
     </>
   )

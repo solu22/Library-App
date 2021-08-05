@@ -8,7 +8,6 @@ const userInfoFromStorage = localStorage.getItem('users')
 ? JSON.parse(localStorage.getItem('userInfo') || '{}')
 :null
 
-
 const storeInitialState: AppState={
     bookReducer: {
         items: [],
@@ -20,7 +19,6 @@ const storeInitialState: AppState={
         error:"",
         
    },
-
     userReducer:{
          users: [],
          loading: false,

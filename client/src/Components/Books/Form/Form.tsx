@@ -31,33 +31,34 @@ const useStyles= makeStyles((theme) => ({
   },
 }));
 
+/*Form data initial State*/
+const initialState= {
+  title: '',
+  description: '',
+  ISBN: '',
+  publisher: '',
+
+}
+
 
 const Form = (): JSX.Element => {
-  const [newTitle, setNewTitle] = useState('')
-  const [newDescription, setNewDescription] = useState('')
-  const [newISBN, setNewISBN] = useState('')
-  const [newPublisher, setNewPublisher] = useState('')
-
+  
+  const [bookFormData, setBookFormData]= useState(initialState)
   const classes = useStyles()
   const dispatch = useDispatch()
 
+  const handleChange= (e: any)=>{
+    const name = e.target.name
+    const value= e.target.value
+    setBookFormData({...bookFormData, [name]: value})
+  }  
 
- const addNewBook = (e: React.FormEvent) => {
+  const addNewBook = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const createNewBook: NewBookFormValues = {
-      title: newTitle,
-      description: newDescription,
-      ISBN: newISBN,
-      publisher: newPublisher,
-      
-    }
-
-    dispatch(addBookThunk(createNewBook))
-    setNewTitle('')
-    setNewDescription('')
-    setNewISBN('')
-    setNewPublisher('')
+    dispatch(addBookThunk(bookFormData))
+    setBookFormData(initialState)
+   
   }
 
   return (
@@ -70,8 +71,8 @@ const Form = (): JSX.Element => {
           variant="outlined"
           label="Title"
           fullWidth
-          value={newTitle}
-          onChange={e => setNewTitle(e.target.value)}
+          value={bookFormData.title}
+          onChange={handleChange}
         />
 
         <TextField
@@ -79,8 +80,8 @@ const Form = (): JSX.Element => {
           variant="outlined"
           label="Description"
           fullWidth
-          value={newDescription}
-          onChange={e => setNewDescription(e.target.value)}
+          value={bookFormData.description}
+          onChange={handleChange}
         />
 
         <TextField
@@ -88,8 +89,8 @@ const Form = (): JSX.Element => {
           variant="outlined"
           label="ISBN"
           fullWidth
-          value={newISBN}
-          onChange={e => setNewISBN(e.target.value)}
+          value={bookFormData.ISBN}       
+          onChange={handleChange}
         />
 
         <TextField
@@ -97,8 +98,8 @@ const Form = (): JSX.Element => {
           variant="outlined"
           label="Publisher"
           fullWidth
-          value={newPublisher}
-          onChange={e => setNewPublisher(e.target.value)}
+          value={bookFormData.publisher}
+          onChange={handleChange}
         />
 
         <Button className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth>

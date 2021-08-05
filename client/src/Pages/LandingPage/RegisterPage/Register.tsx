@@ -1,14 +1,28 @@
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+
 /*React and redux */
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 /*Mui Imports */
-import { TextField, Button, Typography, Paper, makeStyles } from '@material-ui/core'
+import {
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  makeStyles,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  FormHelperText,
+} from '@material-ui/core'
 import { register } from '../../../Redux/Actions/user'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../Redux/Reducers'
 import LinearWithValueLabel from '../Loader'
-import ErrorMessage from '../ErrorMessage'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,6 +48,11 @@ const useStyles = makeStyles(theme => ({
   loginHead: {
     textAlign: 'center',
   },
+  textField: {
+    '& p': {
+      color: 'red',
+    },
+  },
 }))
 
 /*Initial state of form data */
@@ -41,106 +60,130 @@ const initialState = {
   firstName: '',
   lastName: '',
   email: '',
+  gender: '',
   password: '',
   cpassword: '',
 }
 
-const Login = () => {
-  const [formData, setFormData] = useState(initialState)
-  const [message, setMessage]= useState('')
+const Register = () => {
+  const [message, setMessage] = useState('')
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
-  
-  const userData = useSelector((state: AppState) => state.userReducer)
-  const { loading} = userData
 
-  
+  const userData = useSelector((state: AppState) => state.userReducer)
+  const { loading } = userData
+
+  //Yup validation
+  const validateSchema = Yup.object().shape({
+    firstName: Yup.string().required('Field cannot be empty'),
+    lastName: Yup.string().required('Field cannot be empty'),
+    email: Yup.string()
+      .email('Please enter valid email address')
+      .required('Email is required'),
+    gender: Yup.string()
+      .oneOf(['male', 'female'], 'Required')
+      .required('Required'),
+    password: Yup.string()
+      .min(7, 'Password minimum length should be 7')
+      .required('Please enter your password with given criteria'),
+    cpassword: Yup.string()
+      .oneOf([Yup.ref('password')], 'password do not match')
+      .required('Please confirm your password'),
+  })
 
   //handle submit for form
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    if(formData.password !== formData.cpassword) 
-         {
-         setMessage('Password do not match')
-         }else{
-          setMessage("") 
-          e.currentTarget.textContent = 'Singing Up...'
-          dispatch(register(formData))
-          history.push('/login')
-         }
-}
+  const handleSubmit = (values: typeof initialState, props: any) => {
+    dispatch(register(values))
+    history.push('/login')
+    setTimeout(() => {
+      props.resetForm()
+      props.setSubmitting(false)
+    }, 2000)
+  }
   return (
     <>
       <Paper className={classes.paper}>
-
         <Typography className={classes.loginHead}>Sign Up</Typography>
-        {message && <ErrorMessage variant= "filled" severity="error">{message}</ErrorMessage>}
         {loading && <LinearWithValueLabel />}
 
-        <form noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
-              <TextField
+        <Formik initialValues={initialState} onSubmit={handleSubmit} validationSchema={validateSchema}>
+          {props => (
+            <Form className={`${classes.root} ${classes.form}`}>
+              <Field
+                as={TextField}
                 autoComplete="fname"
                 name="firstName"
                 label="firstName"
                 variant="outlined"
-                required
                 fullWidth
-                onChange={e => setFormData({ ...formData, firstName: e.target.value })}
+                helperText={<ErrorMessage name="firstName" />}
+                className={classes.textField}
               />
 
-              <TextField
+              <Field
+                as={TextField}
                 autoComplete="fname"
                 name="lastName"
                 label="lastName"
                 variant="outlined"
-                required
                 fullWidth
-                onChange={e => setFormData({ ...formData, lastName: e.target.value })}
+                helperText={<ErrorMessage name="lastName" />}
               />
 
-          <TextField
-            autoComplete="email"
-            name="Email"
-            variant="outlined"
-            label="Email"
-            required
-            fullWidth
-            onChange={e => setFormData({ ...formData, email: e.target.value })}
-          />
+              <Field
+                as={TextField}
+                autoComplete="email"
+                name="email"
+                variant="outlined"
+                label="Email"
+                fullWidth
+                helperText={<ErrorMessage name="email" />}
+                className={classes.textField}
+              />
 
-          <TextField
-            autoComplete="password"
-            name="password"
-            variant="outlined"
-            label="Password"
-            required
-            fullWidth
-            onChange={e => setFormData({ ...formData, password: e.target.value })}
-          />
-        
-              <TextField
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Gender</FormLabel>
+                <Field as={RadioGroup} aria-label="gender" name="gender" style={{ display: 'initial' }}>
+                  <FormControlLabel value="male" control={<Radio />} label="male" />
+                  <FormControlLabel value="female" control={<Radio />} label="female" />
+                </Field>
+              </FormControl>
+              <FormHelperText>
+                <ErrorMessage name="gender" />
+              </FormHelperText>
+              <Field
+                as={TextField}
+                autoComplete="password"
+                name="password"
+                variant="outlined"
+                label="Password"
+                fullWidth
+                type="password"
+                helperText={<ErrorMessage name="password" />}
+                className={classes.textField}
+              />
+
+              <Field
+                as={TextField}
                 autoComplete="confirm password"
                 name="cpassword"
                 label="Confirm Password"
                 variant="outlined"
                 fullWidth
-                onChange={e => setFormData({ ...formData, cpassword: e.target.value })}
+                type="password"
+                helperText={<ErrorMessage name="cpassword" />}
+                className={classes.textField}
               />
 
-         
-<Button variant="contained" type="submit" color="primary" >
-           Sign Up
-          </Button>
-        
-
-          
-        </form>
+              <Button variant="contained" type="submit" disabled={props.isSubmitting} color="primary">
+                {props.isSubmitting ? 'Signing Up ' : 'Sign Up'}
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </Paper>
     </>
   )
-
 }
-export default Login
-
+export default Register

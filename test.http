@@ -4,12 +4,12 @@ content-type: application/json
 
 {
     
-  "firstName": "Turku",
-  "lastName": "Helsinki",
-  "email": "rajesh@gmail.com",
+  "firstName": "Pasang",
+  "lastName": "Sherpa",
+  "email": "pasang@gmail.com",
   "gender": "male",
-  "password": "turku",
-  "cpassword": "turku",
+  "password": "pasang",
+  "cpassword": "pasang",
   "isAdmin": true
 }
 

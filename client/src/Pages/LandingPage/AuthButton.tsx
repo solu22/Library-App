@@ -7,6 +7,7 @@ import { login } from '../../Redux/Actions/auth'
 const AuthButton = () => {
   const history = useHistory()
   const dispatch = useDispatch()
+
   const responseGoogleSuccess = async (response: any) => {
     dispatch(login(response.tokenId))
     history.push('/homepage')

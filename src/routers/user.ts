@@ -21,12 +21,12 @@ router.post(
   passport.authenticate('google-id-token', { session: false }),
   googleAuth
 )
-router.post('/register', JWT_AUTH, checkRole, createUser)
+router.post('/register', createUser)
 router.get('/', findAll)
-router.get('/:userId', findUserById)
+router.get('/:userId', JWT_AUTH, checkRole, findUserById)
 router.put('/:userId/borrow', borrowBook)
 router.put('/:userId', JWT_AUTH, checkRole, updateUser)
-router.post('/localLogin', JWT_AUTH, localLogin)
+router.post('/localLogin', localLogin)
 router.delete('/:userId', JWT_AUTH, checkRole, deleteUser)
 
 export default router
