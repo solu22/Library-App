@@ -154,7 +154,22 @@ type: typeof REMOVE_AUTHOR
 payload: Author
 }
 
+//Action type for Notifications
 
+export const ADD_NOTIFICATION = 'ADD_NOTIFICATION'
+
+//A message
+export type Message ={
+  errorMessage: string
+  successMessage: string
+}
+
+export type addNotificationAction ={
+  type: typeof ADD_NOTIFICATION
+  payload: Message
+}
+
+export type NotificationAction= addNotificationAction
 
 
 export type AuthActions= loginRequest| loginUser | loginFailed| logoutUser | localLogin

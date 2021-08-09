@@ -49,7 +49,12 @@ export const logout= ()=> async(dispatch: Dispatch<AuthActions>)=>{
         })  
         
     }catch(error){
-        console.log(error)
-       
+              let msg =""
+              if(error.response.statusCode === 400){
+              msg+= msg + "Invalid request"
+               dispatch(loginFailed(msg))
+           }
+         }
+         
     }
- }
+ 

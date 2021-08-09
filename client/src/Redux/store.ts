@@ -26,6 +26,14 @@ const storeInitialState: AppState={
          
     },
 
+    authorReducer:{
+        authors: []
+    },
+
+    notificationReducer:{
+        message: []
+    },
+
 }
 
 const middlewares = [thunk]

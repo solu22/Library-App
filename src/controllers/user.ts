@@ -196,6 +196,5 @@ export const borrowBook = async (
 }
 // google authorization
 export const googleAuth = async (req: Request, res: Response) => {
-  console.log('authorization from google>>>>>>>>>>>>>>>>>>>>', req)
   res.json(req.user)
 }

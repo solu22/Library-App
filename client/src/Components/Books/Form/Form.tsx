@@ -22,11 +22,18 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     padding: theme.spacing(),
+    minWidth: 120,
+    maxWidth: 300,
+    margin: '70px auto'
+    
   },
   form: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    minWidth: 120,
+    maxWidth: 300,
+    
   },
 
   buttonSubmit: {
@@ -60,11 +67,14 @@ const AddBookForm = () => {
   }
 
   return (
-    <Paper className={classes.paper}>
+  
+    
+    <Paper className={classes.paper} elevation= {20}>
+    <Typography variant="h6" style={{textAlign:"center"}}>Add a new Book Here</Typography>
       <Formik initialValues={initialState} onSubmit={handleSubmit} validationSchema={validateBookSchema}>
         {props => (
           <Form className={`${classes.root} ${classes.form}`}>
-            <Typography variant="h6">Add a new Book Here</Typography>
+            
 
             <Field
               as={TextField}

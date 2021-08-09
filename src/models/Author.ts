@@ -2,22 +2,25 @@
 import mongoose, { Document } from 'mongoose'
 
 export type AuthorDocument = Document & {
-  name: string
+  firstName: string
+  lastName: string
   gender: 'male' | 'female'
   location: string
 }
 
 const authorSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
       required: [true, 'Field Cannot be empty'],
+    },
+    lastName: {
+      type: String,
     },
     gender: {
       type: String,
       enum: ['male', 'female'],
       lowercase: true,
-      required: true,
     },
 
     location: String,

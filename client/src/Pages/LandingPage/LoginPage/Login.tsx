@@ -12,6 +12,7 @@ import { localLogin } from '../../../Redux/Actions/auth'
 import { useHistory } from 'react-router-dom'
 import { red } from '@material-ui/core/colors'
 //import ErrorMessage from '../ErrorMessage'
+//import { errorHandler } from '../../../errorHandler'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,6 +78,7 @@ const Login = () => {
   return (
     <>
       <Paper className={classes.paper}>
+         {/* {alert(error)} */}
         {loading && <LinearWithValueLabel />}
         
           <Formik initialValues= {initialState} onSubmit= {handleSubmit} validationSchema= {validateLoginSchema}>
