@@ -10,7 +10,7 @@ const AuthButton = () => {
 
   const responseGoogleSuccess = async (response: any) => {
     dispatch(login(response.tokenId))
-    history.push('/homepage')
+    history.push('/admin')
   }
   const responseGoogleFailure = (error: any) => {
     console.log('Invalid user')

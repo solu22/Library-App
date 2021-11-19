@@ -4,9 +4,7 @@ import rootReducer, { AppState } from './Reducers/index'
 import { composeWithDevTools} from 'redux-devtools-extension'
 
 
-const userInfoFromStorage = localStorage.getItem('users')
-? JSON.parse(localStorage.getItem('userInfo') || '{}')
-:null
+const userInfoFromStorage = localStorage.getItem('token')
 
 const storeInitialState: AppState={
     bookReducer: {
@@ -14,7 +12,7 @@ const storeInitialState: AppState={
     },
 
     authReducer:{
-        activeUser: userInfoFromStorage,
+        activeUser: null,
         loading:false,
         error:"",
         
@@ -31,7 +29,7 @@ const storeInitialState: AppState={
     },
 
     notificationReducer:{
-        message: []
+        message: {errorMessage: "", successMessage:""}
     },
 
 }

@@ -1,6 +1,6 @@
 /*React and redux */
 import React, { useState } from 'react'
-import {Formik, Form, Field, ErrorMessage} from 'formik'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { validateLoginSchema } from '../../../FormValidation/ValidateSchema'
 
 /*Mui Imports */
@@ -10,13 +10,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../Redux/Reducers'
 import { localLogin } from '../../../Redux/Actions/auth'
 import { useHistory } from 'react-router-dom'
-import { red } from '@material-ui/core/colors'
-//import ErrorMessage from '../ErrorMessage'
-//import { errorHandler } from '../../../errorHandler'
+
 
 const useStyles = makeStyles(theme => ({
   root: {
-    '& .MuiTextField-root':{
+    '& .MuiTextField-root': {
       margin: theme.spacing(),
     },
   },
@@ -39,16 +37,12 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
   },
 
-  textField:{
-   '& p':{
-     color: 'red', 
+  textField: {
+    '& p': {
+      color: 'red',
     },
   },
-  
-
 }))
-
-
 
 /*Initial state of form data */
 const initialState = {
@@ -57,63 +51,67 @@ const initialState = {
 }
 
 const Login = () => {
-  const [message, setMessage] = useState('')
   const classes = useStyles()
-  const authData = useSelector((state: AppState) => state.authReducer)
-  const { loading, error } = authData
+  const { activeUser, loading } = useSelector((state: AppState) => state.authReducer)
 
   const dispatch = useDispatch()
   const history = useHistory()
-  
 
- const handleSubmit= (values: typeof initialState , props: any)=>{
+  if (activeUser) {
+    if (activeUser.isAdmin) {
+      history.push('/admin')
+    } else {
+      history.push('/homepage')
+    }
+  }
+
+  const handleSubmit = (values: typeof initialState, props: any) => {
     dispatch(localLogin(values))
-    history.push("/homepage")
+
     setTimeout(() => {
       props.resetForm()
       props.setSubmitting(false)
-    }, 2000)
+    }, 100)
   }
 
   return (
     <>
       <Paper className={classes.paper}>
-         {/* {alert(error)} */}
+        {/* {alert(error)} */}
         {loading && <LinearWithValueLabel />}
-        
-          <Formik initialValues= {initialState} onSubmit= {handleSubmit} validationSchema= {validateLoginSchema}>
-            {(props)=>(
-              
-              <Form className={`${classes.root} ${classes.form}`}>
-              
-            <Field as = {TextField}
-            autoComplete="email"
-            name="email"
-            variant="outlined"
-            label="Email"
-            fullWidth
-            helperText= {<ErrorMessage name= "email"/>}
-            className = {classes.textField}
-          />
 
-          <Field as = {TextField}
-            autoComplete="password"
-            name="password"
-            variant="outlined"
-            label="Password"
-            type= "password"
-            fullWidth
-            helperText= {<ErrorMessage name= "password"/>}
-            className = {classes.textField}
-          />
+        <Formik initialValues={initialState} onSubmit={handleSubmit} validationSchema={validateLoginSchema}>
+          {props => (
+            <Form className={`${classes.root} ${classes.form}`}>
+              <Field
+                as={TextField}
+                autoComplete="email"
+                name="email"
+                variant="outlined"
+                label="Email"
+                fullWidth
+                helperText={<ErrorMessage name="email" />}
+                className={classes.textField}
+              />
 
-          <Button variant="contained" type="submit" disabled = {props.isSubmitting}
-            color="primary">{props.isSubmitting?"Signing In" : "Sign In"}
-          </Button>
-              </Form>
-            )}
-          </Formik>
-          
+              <Field
+                as={TextField}
+                autoComplete="password"
+                name="password"
+                variant="outlined"
+                label="Password"
+                type="password"
+                fullWidth
+                helperText={<ErrorMessage name="password" />}
+                className={classes.textField}
+              />
+
+              <Button variant="contained" type="submit" disabled={props.isSubmitting} color="primary">
+                {props.isSubmitting ? 'Signing In' : 'Sign In'}
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </Paper>
     </>
   )

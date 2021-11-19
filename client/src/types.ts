@@ -34,13 +34,10 @@ export type Book = {
   status: boolean;
   ISBN: string;
   publisher: string;
-  //image: string;
-  // authors: string[];
+  authors: Array<{firstName: string, _id: string}>;
 
 }
 
-//Bookform values
-export type NewBookFormValues = Omit<Book, '_id'|'status'|'authors'> ; 
 
 export type EditBookFormValues = Omit<Book, 'authors'> ; 
 
@@ -75,12 +72,10 @@ export type User ={
   lastName: string
   email: string
   password: string
+  isAdmin: boolean
 }
 
-export type LoginData={
-  users: User,
-  token: string,
-}
+
 
 
  export type loginRequest={

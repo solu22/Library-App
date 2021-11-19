@@ -31,5 +31,10 @@ export const validateRegisterSchema=Yup.object().shape({
     
    })
 
+  export const validateAuthorSchema = Yup.object().shape({
+    firstName: Yup.string().required('Field cannot be empty'),
+    lastName: Yup.string().required('Field cannot be empty'),
+  })
+
 
       

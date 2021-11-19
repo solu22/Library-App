@@ -13,7 +13,8 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
-import { AppBar, Container, createStyles, Typography } from '@material-ui/core'
+import { AppBar, Button, Container, createStyles, Typography } from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,8 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const AuthorPage = () => {
+  const history = useHistory()
   const classes = useStyles()
   const authorData = useAuthor()
+  
   if (authorData.length === 0) {
     return <LinearWithValueLabel />
   }
@@ -41,12 +44,15 @@ const AuthorPage = () => {
   return (
     <>
       <div>
+         
         <Container maxWidth="lg" style={{ textAlign: 'center' }}>
+                  
           <AppBar>
             <Typography variant="h4" style={{ textAlign: 'center', padding: '50' }}>
               Welcome To Admin Page
             </Typography>
           </AppBar>
+          
           <TableContainer component={Paper} className={classes.paper}>
             <Table className={classes.table} aria-label="author's table">
               <TableHead className={classes.head}>
@@ -67,6 +73,10 @@ const AuthorPage = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <Button variant="contained" type="submit" color="primary" onClick={() => history.push('/admin')}>
+            Admin Page
+          </Button>
+          
         </Container>
       </div>
     </>

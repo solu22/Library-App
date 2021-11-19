@@ -12,7 +12,7 @@ export type UserDocument = Document & {
   password: string;
   cpassword: string;
   isAdmin: boolean;
-  token: string;
+  //token: string;
   borrowedBookList: string[];
 }
 
@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema(
 
     isAdmin: {
       type: Boolean,
-      default: false,
+     // default: true,
     },
 
     borrowedBookList: [

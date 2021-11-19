@@ -20,8 +20,6 @@ router.put(
   updateBook
 )
 router.delete('/:bookId', JWT_AUTH, deleteBook)
-// router.post('/', passport.authenticate('jwt', { session: false }), createBook)
-
-router.post('/', createBook)
+router.post('/', passport.authenticate('jwt', { session: false }), createBook)
 
 export default router

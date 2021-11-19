@@ -11,15 +11,21 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import { red } from '@material-ui/core/colors'
+import Button from '@material-ui/core/Button'
+import { Link } from 'react-router-dom'
 
 /*React and Redux */
 import React from 'react'
 import EditBookForm from '../Form/EditBookForm'
 import { removeBookThunk } from '../../../Redux/Actions/book'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { createTheme } from '@material-ui/core'
+import { ThemeProvider } from '@material-ui/styles'
 
 /*Types */
 import { Book } from '../../../types'
+import { AppState } from '../../../Redux/Reducers'
 export type BookProps = {
   book: Book
 }
@@ -40,40 +46,51 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const theme = createTheme({
+  palette: {
+    type: 'dark',
+  },
+})
+
 export default function SBook({ book }: BookProps) {
   const classes = useStyles()
   const dispatch = useDispatch()
-
+  const { activeUser} = useSelector((state: AppState) => state.authReducer)
   const handleDelete = () => {
-    dispatch(removeBookThunk(book))
+    if (window.confirm(`Do you really want to delete ${book.title}`)) {
+      dispatch(removeBookThunk(book))
+    }
   }
 
   return (
-    <Card className={classes.root}>
-      <CardHeader
-        avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
-        }
-        title={book.title}
-        subheader="September 14, 2016"
-      />
-      <CardMedia className={classes.media} image="https://picsum.photos/200/300" title="Paella dish" />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {book.description}
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton>
-          <EditBookForm key={book._id} book={book} />
-        </IconButton>
+    <ThemeProvider theme={theme}>
+      <Card className={classes.root}>
+        <CardContent>
+          <Typography variant="body2" color="textSecondary" style={{ textAlign: 'center' }}>
+            Title: {book.title}
+          </Typography>
+          <p></p>
 
-        <IconButton color="primary" onClick={handleDelete}>
-          <DeleteForeverIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
+          <Typography variant="body2" color="textSecondary" style={{ textAlign: 'center' }}>
+            <Link to={`/homepage/${book.title}`}>
+              <Button variant="contained">Details</Button>
+            </Link>
+          </Typography><p></p>
+        
+           {activeUser && (<Typography variant="body2" color="textSecondary" style={{ textAlign: 'center' }}>
+            <IconButton style={{color:"whitesmoke"}}>
+              <EditBookForm key={book._id} book={book} />
+            </IconButton>
+            <IconButton onClick={handleDelete}>
+              <DeleteForeverIcon />
+            </IconButton>
+          </Typography>
+          )
+           }
+           
+        
+        </CardContent>
+      </Card>
+    </ThemeProvider>
   )
 }

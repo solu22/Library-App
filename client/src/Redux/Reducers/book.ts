@@ -11,7 +11,7 @@ export const initState: InitState = {
 const bookReducer = (state = initState, action: BookActions): InitState => {
   switch (action.type) {
     case GET_ALL_BOOKS:
-      return { items: action.payload }
+      return { ...state, items: action.payload }
 
     case ADD_NEW_BOOK:
       return { ...state, items: state.items.concat(action.payload) }

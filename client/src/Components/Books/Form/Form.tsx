@@ -1,18 +1,26 @@
 /*React and Redux*/
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AppState } from '../../../Redux/Reducers'
 import { addBookThunk } from '../../../Redux/Actions/book'
-
-import { Formik, Form, Field, ErrorMessage } from 'formik'
-
-/*Types */
-import { NewBookFormValues } from '../../../types'
+import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 
 /*Mui Imports */
-import { TextField, Button, Typography, Paper } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { TextField, Button, Typography, Paper, MenuItem, useTheme} from '@material-ui/core'
+import { makeStyles, Theme } from '@material-ui/core/styles'
 import { validateBookSchema } from '../../../FormValidation/ValidateSchema'
+import { useHistory } from 'react-router-dom'
+import InputLabel from '@material-ui/core/InputLabel';
+import useAuthor from '../../../custom-hook/useAuthor'
+
+import {Select} from 'formik-material-ui'
+import MuiTextField from '@material-ui/core/TextField';
+import {
+  Autocomplete,
+  AutocompleteRenderInputParams
+ 
+} from 'formik-material-ui-lab'
+import MessageBar from '../../Notification/Notification'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,9 +44,25 @@ const useStyles = makeStyles(theme => ({
     
   },
 
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+
+  chip: {
+    margin: 2,
+  },
+
   buttonSubmit: {
     marginBottom: 10,
   },
+  
+  formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+      maxWidth: 300,
+    },
+
   textField: {
     '& p': {
       color: 'red',
@@ -46,24 +70,48 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
+
+type FormValues ={
+  title: string
+  description: string
+  ISBN: string
+  publisher: string
+  authors: Array<{_id: string}> 
+
+}
+
 /*Form data initial State*/
-const initialState = {
+const initialState: FormValues = {
   title: '',
   description: '',
   ISBN: '',
   publisher: '',
+  authors: [] 
 }
 
+
+
+
 const AddBookForm = () => {
+
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
+   const theme = useTheme();
+  const authorData = useAuthor()
 
-  const handleSubmit = (values: typeof initialState, props: any) => {
-    dispatch(addBookThunk(values))
+  const handleSubmit = (values: FormValues, props: any) => {
+       dispatch(addBookThunk(values))
+       setTimeout(() => {
+        history.push('/admin')
+      }, 3000);
+     
     setTimeout(() => {
+      const authorIds = values.authors.map(author => author._id)
+      JSON.stringify({...values, authors: authorIds}, null, 2)
       props.resetForm()
       props.setSubmitting(false)
-    }, 2000)
+    }, 100)
   }
 
   return (
@@ -115,8 +163,29 @@ const AddBookForm = () => {
               helperText={<ErrorMessage name="publisher" />}
               className={classes.textField}
             />
-
-            <Button
+           
+           
+           <Field
+              name="authors"
+              multiple
+              component={Autocomplete}
+              options={authorData}
+              getOptionLabel={(option: any) => option.firstName}
+              style={{width: 300}}
+              renderInput={(params: AutocompleteRenderInputParams) => (
+                <MuiTextField
+                  {...params}
+                 
+                  label="Select Authors"
+                  variant="outlined"
+                />
+              )}
+            /> 
+          
+           
+          
+      
+      <Button
               className={classes.buttonSubmit}
               variant="contained"
               color="primary"
@@ -126,10 +195,11 @@ const AddBookForm = () => {
               disabled={props.isSubmitting}
             >
               {props.isSubmitting ? 'Adding Book' : 'Add Book'}
-            </Button>
+            </Button> 
           </Form>
         )}
       </Formik>
+      <MessageBar/>
     </Paper>
   )
 }

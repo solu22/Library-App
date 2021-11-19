@@ -4,19 +4,24 @@ import SBook from '../../Components/Books/Book/Book'
 import { AppState } from '../../Redux/Reducers'
 
 /*Mui Imports */
-import { CircularProgress, Grid } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
 
-import { makeStyles } from '@material-ui/core/styles'
 import LinearWithValueLabel from '../LandingPage/Loader'
 import Appbar from '../../Components/AppBar/Appbar'
 import { Book } from '../../types'
 
-const useStyles = makeStyles(theme => ({
-  mainContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-}))
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    singleBook:{
+      textAlign: 'center',
+    }
+  }),
+);
+
 
 type BookProps ={
   book: Book[]
@@ -29,7 +34,7 @@ const Books = ({book}: BookProps) => {
 
   return (
     <>
-
+       <div>
       {!book.length ? (
         <div>
           {<p>{errorText}</p>}
@@ -37,14 +42,17 @@ const Books = ({book}: BookProps) => {
         </div>
           
         ) : (
-        <Grid className={classes.mainContainer} container alignItems="stretch" spacing={3}>
+         
+        <Grid container spacing={4}>
           {book.map(book => (
-            <Grid key={book.title} item xs={12} sm={6}>
-              <SBook key={book.title} book={book} />
+            <Grid key={book._id} item xs className="singleBook">
+               <SBook key={book._id} book={book} />
             </Grid>
           ))}
         </Grid>
+        
       )}
+      </div>
     </>
   )
 }

@@ -29,6 +29,11 @@ content-type: application/json
 GET http://localhost:3000/api/v1/books
 
 
+
+###
+GET http://localhost:3000/api/v1/authors
+
+
 ###
 POST http://localhost:3000/api/v1/books
 content-type: application/json

@@ -1,5 +1,4 @@
-/*Axios */
-import axios from 'axios'
+
 
 /*React Redux */
 import React, { useState, useEffect } from 'react'
@@ -10,15 +9,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 /*Mui Imports */
 import { AppBar, Button, Grid, TextField, Toolbar, Typography } from '@material-ui/core'
-import { makeStyles,createStyles } from '@material-ui/core/styles'
-import MenuBookIcon from '@material-ui/icons/MenuBook';
+import { makeStyles, createStyles } from '@material-ui/core/styles'
+import MenuBookIcon from '@material-ui/icons/MenuBook'
 import { logout } from '../../Redux/Actions/auth'
 
-
-
-
 const useStyles = makeStyles(theme => ({
-
   appBar: {
     borderRadius: 15,
     margin: '30px 0',
@@ -27,16 +22,16 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '10px 50px',
+    backgroundColor: 'skyblue',
   },
   heading: {
-    color: 'rgba(0,183,255, 1)',
     textDecoration: 'none',
   },
 
   toolbar: {
     display: 'flex',
     justifyContent: 'flex-end',
-    width: '400px',
+    width: '100px',
   },
   profile: {
     display: 'flex',
@@ -45,12 +40,12 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-type AppbarProps ={
-  handleSearch: any,
+type AppbarProps = {
+  handleSearch: any
   search: any
 }
 
-const Appbar = ({handleSearch, search}: AppbarProps) => {
+const Appbar = ({ handleSearch, search }: AppbarProps) => {
   const history = useHistory()
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -65,32 +60,26 @@ const Appbar = ({handleSearch, search}: AppbarProps) => {
     <AppBar className={classes.appBar} position="static" color="inherit">
       <div className={classes.profile}>
         <Typography className={classes.heading} variant="h2" align="center">
-          <Link to="/" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+          <Link to="/homepage" style={{ textDecoration: 'none', cursor: 'pointer', color: 'black' }}>
             Library App
           </Link>
         </Typography>
       </div>
-      
+
       <div className={classes.appBar}>
         <Grid container spacing={1} alignItems="flex-end">
           <Grid item>
-          <MenuBookIcon />
+            <MenuBookIcon />
           </Grid>
           <Grid item>
-            <TextField id="input-with-icon-grid" 
-            label="Search book here"
-            onChange= {handleSearch}
-            value= {search} />
+            <TextField id="input-with-icon-grid" label="Search book here" onChange={handleSearch} value={search} />
           </Grid>
         </Grid>
-      </div> 
-     
-
+      </div>
 
       <Toolbar className={classes.toolbar}>
         {currentUser ? (
           <div className={classes.profile}>
-            <Typography>{`Hello ${currentUser.firstName}`}</Typography>
             <Button variant="contained" color="secondary" onClick={logoutUser}>
               Logout
             </Button>

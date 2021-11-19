@@ -14,6 +14,7 @@ import { Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
+import { string } from 'yup'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,6 +46,7 @@ const EditBookForm = ({ book }: EditBookFormProps) => {
   const [newDescription, setNewDescription] = useState(book.description)
   const [newISBN, setNewISBN] = useState(book.ISBN)
   const [newPublisher, setNewPublisher] = useState(book.publisher)
+  const [authorIdList, setauthorIdList] = useState(book.authors)
 
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -68,6 +70,7 @@ const EditBookForm = ({ book }: EditBookFormProps) => {
       ISBN: newISBN,
       status: false,
       publisher: newPublisher,
+      authors: authorIdList,
     }
 
     dispatch(updateBookThunk(newBook))
